@@ -1,0 +1,9 @@
+[Telegram]
+token =
+channelid = @channleid
+
+[Program]
+lastpostnumber = 0
+lastpostposition = 0
+url = https://majeur.zawarudo.org/virtuelles/res/.json
+
