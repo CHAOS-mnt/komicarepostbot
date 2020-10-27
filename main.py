@@ -8,10 +8,11 @@ from util import htmlTagsToText
 config = configparser.ConfigParser()
 config.read('bot.ini')
 token = config.get('Telegram','token')
-channel_id = config.get('Telegram','channelid')
+channel_id = config.get('Telegram','channel_id')
 new_url = config.get('Program','url')
-last_post_no = config.getint('Program','lastpostnumber')
-last_post_position = config.getint('Program','lastpostposition')
+last_post_no = config.getint('Program','last_post_number')
+last_post_position = config.getint('Program','last_post_position')
+update_interval = config.getint('Program','update_interval')
 
 logging.basicConfig(level=logging.INFO,
                     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
@@ -22,6 +23,8 @@ if last_post_position != 0:
     logging.info('Start in the middle')
 else:
     logging.info('Start at the beginning')
+
+
 
 class posts:
     def __init__(self, i):
@@ -117,8 +120,7 @@ try:
             else:
                 logging.info('Nothing New')
 
-        #每60秒获取一次
-        time.sleep(30)
+        time.sleep(update_interval)
 finally:
     logging.info('Program Stopped')
     bot.send_message(chat_id=channel_id, text='Bot Offline')

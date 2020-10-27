@@ -13,11 +13,12 @@
 ```
 [Telegram]
 token = //bot token
-channelid = //@yourchannelid
+channel_id = //@yourchannelid
 
 [Program]
-lastpostnumber = //贴文号，用于从指定回复开始转发，从头开始转发则填0
-lastpostposition = //最后转发的回复在串里的序号，从头开始转发写填0，否则请填任意大于0的数字
+last_post_number = //贴文号，用于从指定回复开始转发，从头开始转发则填0
+last_post_position = //最后转发的回复在串里的序号，从头开始转发写填0，否则请填任意大于0的数字
+update_interval = //刷新间隔时间，单位秒
 url = //要转发的串的json格式完整url, e.g:https://majeur.zawarudo.org/virtuelles/res/181499.json
 ```
 ## Bug
