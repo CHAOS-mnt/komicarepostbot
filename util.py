@@ -1,4 +1,13 @@
+import configparser
+import requests
 from bs4 import BeautifulSoup
+
+
+config = configparser.ConfigParser()
+config.read('bot.ini')
+token = config.get('Telegram','token')
+channel_id = config.get('Telegram','channel_id')
+
 
 def htmlTagsToText(html_string):
     soup=BeautifulSoup(html_string, features="html.parser")
@@ -32,3 +41,9 @@ def htmlTagsToText(html_string):
     html_string = html_string.replace("&amp;", "&")
     return html_string.replace("<br/>", "\n")
 
+
+def getLastPostNumber():
+    channel_web_url = 'https://tg.i-c-a.su/json/' + channel_id[1:]
+    r = requests.get(channel_web_url)
+    no = r.json()['messages'][0]['message'][1:7]
+    return int(no)

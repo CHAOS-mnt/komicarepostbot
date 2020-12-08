@@ -3,14 +3,14 @@ import time
 import logging
 import telegram
 import configparser
-from util import htmlTagsToText
+from util import htmlTagsToText, getLastPostNumber
 
 config = configparser.ConfigParser()
 config.read('bot.ini')
 token = config.get('Telegram','token')
 channel_id = config.get('Telegram','channel_id')
 new_url = config.get('Program','url')
-last_post_no = config.getint('Program','last_post_number')
+last_post_no = getLastPostNumber()
 last_post_position = config.getint('Program','last_post_position')
 update_interval = config.getint('Program','update_interval')
 
