@@ -7,23 +7,18 @@ from util import htmlTagsToText, getLastPostNumber
 
 config = configparser.ConfigParser()
 config.read('bot.ini')
-token = config.get('Telegram','token')
-channel_id = config.get('Telegram','channel_id')
-new_url = config.get('Program','url')
+token = config.get('Telegram', 'token')
+channel_id = config.get('Telegram', 'channel_id')
+new_url = config.get('Program', 'url')
 last_post_no = getLastPostNumber()
-last_post_position = config.getint('Program','last_post_position')
-update_interval = config.getint('Program','update_interval')
+last_post_position = config.getint('Program', 'last_post_position')
+update_interval = config.getint('Program', 'update_interval')#拉取新消息的间隔
+send_interval = config.getint('Program', 'send_interval')#发送到tg的间隔
 
 logging.basicConfig(level=logging.INFO,
                     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
 bot = telegram.Bot(token=token)
-
-if last_post_position != 0:
-    logging.info('Start in the middle')
-else:
-    logging.info('Start at the beginning')
-
 
 
 class posts:
@@ -54,12 +49,21 @@ def sendImage():
     else:
         text = '#' + str(p.post["no"])
     if p.post["ext"] == '.jpg' or p.post["ext"] == '.png' or p.post["ext"] == '.jpeg':
-        bot.send_photo(chat_id=channel_id, photo=open('img/'+p.file_name, 'rb'), caption=text)
+        try:
+            bot.send_photo(chat_id=channel_id, photo=open('img/'+p.file_name, 'rb'), caption=text)
+        except:
+            logging.info('Failed to send image,try to send as file')
+            bot.send_document(chat_id=channel_id, document=open('img/' + p.file_name, 'rb'))
+            bot.send_message(chat_id=channel_id, text=text)
     else:
-        bot.send_document(chat_id=channel_id, document=open('img/'+p.file_name, 'rb'))
+        bot.send_document(chat_id=channel_id, document=open('img/' + p.file_name, 'rb'))
         bot.send_message(chat_id=channel_id, text=text)
 
 try:
+    if last_post_position != 0:
+        logging.info('Start from' + last_post_no)
+    else:
+        logging.info('Start at the beginning')
     while True:
         print('-'*20)
         r = requests.get(new_url)
@@ -83,10 +87,7 @@ try:
             p = posts(last_post_position)
             #判断是否有新回复
             if last_post_no < p.post["no"]:
-                config.set('Program','LastPostNumber',str(p.post["no"]))
-                with open('bot.ini', 'w') as configfile:
-                    config.write(configfile)
-                time.sleep(3)
+                time.sleep(send_interval)
                 #分别处理不同类型的回复
                 if 'com' in p.post:
                     if 'ext' in p.post:
