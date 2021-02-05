@@ -14,8 +14,9 @@ last_post_no = getLastPostNumber()
 last_post_position = config.getint('Program', 'last_post_position')
 update_interval = config.getint('Program', 'update_interval')#拉取新消息的间隔
 send_interval = config.getint('Program', 'send_interval')#发送到tg的间隔
+log_level = 'logging.' + config.get('Program', 'log_level')
 
-logging.basicConfig(level=logging.INFO,
+logging.basicConfig(level=logging.DEBUG,
                     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
 bot = telegram.Bot(token=token)
@@ -60,10 +61,7 @@ def sendImage():
         bot.send_message(chat_id=channel_id, text=text)
 
 try:
-    if last_post_position != 0:
-        logging.info('Start from' + last_post_no)
-    else:
-        logging.info('Start at the beginning')
+    logging.debug('last_post_no = ' + str(last_post_no))
     while True:
         print('-'*20)
         r = requests.get(new_url)
