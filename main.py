@@ -71,6 +71,7 @@ try:
         else:
             continue
     
+        print('lpp=',last_post_position)
         if last_post_position != 0:
             #查询上次得到的最后回复在新list中的位置 
             for last_post_position in range(1, len(Context)):

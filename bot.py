@@ -1,23 +1,33 @@
-import configparser
-import requests
+from telegram import Bot
+import logging
 
-config = configparser.ConfigParser()
-config.read('bot.ini')
-token = config.get('Telegram','token')
-channel_id = config.get('Telegram','channel_id')
+class ForwardBot(Bot):
 
-def getLastPostNumber():
-    channel_web_url = 'https://tg.i-c-a.su/json/' + channel_id[1:]
-    r = requests.get(channel_web_url)
-    no = r.json()['messages'][0]['message'][1:7]
+    def __init__(self, token):
+        super().__init__(token=token)
+        self.logger =logging.getLogger(self.__class__.__name__)
+        self.logger.info('Initializing')
 
-    return no
-test = getLastPostNumber()
-print(test)
-'''
-bot = telegram.Bot(token=token)
-text = bot.get_updates(offset=None, limit=1, timeout=0)[0].channel_post['text'][1:7]
-print(text)
-'''
+    def send(self, channel_id, text, *file):
+        if file:
+            if file[0][-3:] == 'jpg' or file[0][-3:] == 'png' or file[0][-3:] == 'jpeg':
+                self.logger.info('Picture with Text - NO.'+text[:7])
+                self.send_photo(chat_id=channel_id, photo=open('img/' + file[0], 'rb'), caption=text)
+                self.logger.debug()
+            else:
+                self.logger.info('File with Text - NO.'+text[:7])
+                self.send_document(chat_id=channel_id, document=open('img/' + file[0], 'rb'))
+                self.send_message(chat_id=channel_id, text=text)
+        else:
+            self.logger.info('Text Only - NO.'+text[:7])
+            self.send_message(chat_id=channel_id, text=text)
+
 if __name__ == '__main__':
-    print(getLastPostNumber())
+
+    logging.basicConfig(
+        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+        level=logging.DEBUG)
+
+    b=ForwardBot('1065530671:AAHVxJIHTV_QmOhyhqLbBgDvodavWWayivA')
+
+    b.send('@hsuusbagaianayxxyhb', 'testlog')
