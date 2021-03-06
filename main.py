@@ -61,7 +61,7 @@ def sendImage():
         bot.send_message(chat_id=channel_id, text=text)
 
 try:
-    logging.debug('last_post_no = ' + str(last_post_no))
+    logging.info('LAST_POST = ' + str(last_post_no))
     while True:
         print('-'*20)
         r = requests.get(new_url)
@@ -70,19 +70,9 @@ try:
             Context = r.json()["posts"]
         else:
             continue
-    
-        print('lpp=',last_post_position)
-        if last_post_position != 0:
-            #查询上次得到的最后回复在新list中的位置 
-            for last_post_position in range(1, len(Context)):
-                last_post = Context[last_post_position]
-                if last_post_no == last_post["no"]:
-                    break
-                elif last_post_no != last_post["no"] and last_post_position == len(Context) - 1:
-                    logging.info('Last post not exist')
 
         #获取回帖内容
-        for last_post_position in range(last_post_position, len(Context)):
+        for last_post_position in range(0, len(Context)):
             p = posts(last_post_position)
             #判断是否有新回复
             if last_post_no < p.post["no"]:
@@ -117,7 +107,7 @@ try:
                     text = '#' + str(p.post["no"]) + '\n' + p.getEmbedLink()
                     bot.send_message(chat_id=channel_id, text=text)
                     last_post_no = p.post["no"]
-            else:
+            elif last_post_position == len(Context)-1:
                 logging.info('Nothing New')
 
         time.sleep(update_interval)

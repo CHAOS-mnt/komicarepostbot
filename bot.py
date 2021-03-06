@@ -13,7 +13,6 @@ class ForwardBot(Bot):
             if file[0][-3:] == 'jpg' or file[0][-3:] == 'png' or file[0][-3:] == 'jpeg':
                 self.logger.info('Picture with Text - NO.'+text[:7])
                 self.send_photo(chat_id=channel_id, photo=open('img/' + file[0], 'rb'), caption=text)
-                self.logger.debug()
             else:
                 self.logger.info('File with Text - NO.'+text[:7])
                 self.send_document(chat_id=channel_id, document=open('img/' + file[0], 'rb'))
